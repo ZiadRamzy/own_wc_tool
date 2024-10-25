@@ -36,11 +36,26 @@ def count_words(file_path: str) -> int:
         print(f"Error: File {file_path} not found.")
         sys.exit(1)
 
+def count_characters(file_path: str) -> int:
+    """Counts the number of characters in the specified file."""
+
+    try:
+        with open(file_path, "rb") as file:
+            content: bytes = file.read()
+            decoded_content = content.decode('utf-8-sig')
+            if decoded_content and decoded_content[-1] == '\n':
+                return len(decoded_content) + 1
+            return len(decoded_content)
+    except FileNotFoundError:
+        print(f"Error: File {file_path} not found.")
+        sys.exit(1)
+
+
 def main(args: List[str]) -> None:
     """Main function to handle command-line arguments and call the appropriate counting function."""
 
     if len(args) != 3:
-        print("Usage ccwc -c/-l/-w <filename>")
+        print("Usage ccwc -c/-l/-w/-m <filename>")
         sys.exit(1)
 
     option = args[1]
@@ -55,8 +70,11 @@ def main(args: List[str]) -> None:
     elif option == "-w":
         word_count: int = count_words(file_path)
         print(f" {word_count} {os.path.basename(file_path)}")
+    elif option == "-m":
+        character_count: int = count_characters(file_path)
+        print(f" {character_count} {os.path.basename(file_path)}")
     else:
-        print("Error: Unsupported option. Use -c for byte count, -l for line count or -w for word count.")
+        print("Error: Unsupported option. Use -c for byte count, -l for line count, -w for word count or -m for character count.")
         sys.exit(1)
 
 if __name__ == "__main__":
